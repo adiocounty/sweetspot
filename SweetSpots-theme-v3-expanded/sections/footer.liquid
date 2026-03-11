@@ -1,0 +1,112 @@
+<footer class="site-footer section">
+  <div class="page-width footer-grid">
+    <div class="stack">
+      <h2>{{ shop.name }}</h2>
+      <p>{{ section.settings.about_text }}</p>
+      <p class="muted">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}.</p>
+    </div>
+
+    <div class="stack">
+      <h3>{{ section.settings.menu_heading }}</h3>
+      <ul class="footer-links" role="list">
+        {% for link in linklists[section.settings.menu].links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="stack">
+      <h3>{{ section.settings.social_heading }}</h3>
+      {% if section.settings.show_social %}
+        <ul class="social-links" role="list">
+          {% if section.settings.facebook_url != blank %}
+            <li><a href="{{ section.settings.facebook_url }}" rel="noopener" target="_blank">Facebook</a></li>
+          {% endif %}
+          {% if section.settings.instagram_url != blank %}
+            <li><a href="{{ section.settings.instagram_url }}" rel="noopener" target="_blank">Instagram</a></li>
+          {% endif %}
+          {% if section.settings.x_url != blank %}
+            <li><a href="{{ section.settings.x_url }}" rel="noopener" target="_blank">X / Twitter</a></li>
+          {% endif %}
+          {% if section.settings.tiktok_url != blank %}
+            <li><a href="{{ section.settings.tiktok_url }}" rel="noopener" target="_blank">TikTok</a></li>
+          {% endif %}
+        </ul>
+      {% endif %}
+
+      {% if section.settings.show_policies %}
+        <ul class="footer-links" role="list">
+          {% for policy in shop.policies %}
+            {% if policy.url != blank %}
+              <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "about_text",
+      "label": "About text",
+      "default": "Use this area to share your brand story and help customers discover what makes your products unique."
+    },
+    {
+      "type": "text",
+      "id": "menu_heading",
+      "label": "Menu heading",
+      "default": "Quick links"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "footer"
+    },
+    {
+      "type": "text",
+      "id": "social_heading",
+      "label": "Social heading",
+      "default": "Follow"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social links",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "x_url",
+      "label": "X / Twitter URL"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policies",
+      "label": "Show policy links",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

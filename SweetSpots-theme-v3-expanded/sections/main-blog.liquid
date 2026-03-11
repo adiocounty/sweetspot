@@ -1,0 +1,142 @@
+<section class="section">
+  <div class="page-width stack">
+    {% if section.settings.show_breadcrumbs %}
+      {% render 'breadcrumbs' %}
+    {% endif %}
+
+    <header class="stack">
+      <h1>{{ blog.title }}</h1>
+      {% if blog.articles_count > 0 %}
+        <p class="muted">{{ blog.articles_count }} articles</p>
+      {% endif %}
+    </header>
+
+    {% if section.settings.show_tags and blog.all_tags.size > 0 %}
+      <nav aria-label="Blog topics">
+        <ul class="site-nav-list" role="list">
+          <li><a href="{{ blog.url }}">All</a></li>
+          {% for tag in blog.all_tags limit: 12 %}
+            <li>
+              <a href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+
+    {% paginate blog.articles by section.settings.articles_per_page %}
+      {% if blog.articles.size > 0 %}
+        <div class="blog-grid" role="list">
+          {% for article in blog.articles %}
+            <article class="card article-card stack" role="listitem">
+              {% if section.settings.show_image and article.image %}
+                <a href="{{ article.url }}" aria-label="Read article: {{ article.title | escape }}">
+                  {{ article.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: article.title }}
+                </a>
+              {% endif %}
+
+              <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
+
+              {% if section.settings.show_date or section.settings.show_author %}
+                <p class="meta">
+                  {% if section.settings.show_date %}
+                    <span>{{ article.published_at | date: "%B %d, %Y" }}</span>
+                  {% endif %}
+                  {% if section.settings.show_author %}
+                    <span>by {{ article.author }}</span>
+                  {% endif %}
+                </p>
+              {% endif %}
+
+              {% if section.settings.show_excerpt %}
+                <p>{{ article.excerpt_or_content | strip_html | truncate: 150 }}</p>
+              {% endif %}
+
+              <p><a href="{{ article.url }}" aria-label="Read article {{ article.title | escape }}">Read more</a></p>
+            </article>
+          {% endfor %}
+        </div>
+
+        {% if paginate.pages > 1 %}
+          <nav aria-label="Blog pages">
+            <div class="stack">
+              {% if paginate.previous %}
+                <a class="button button--secondary" href="{{ paginate.previous.url }}">Previous</a>
+              {% endif %}
+              {% if paginate.next %}
+                <a class="button button--secondary" href="{{ paginate.next.url }}">Next</a>
+              {% endif %}
+            </div>
+          </nav>
+        {% endif %}
+      {% else %}
+        <div class="empty-state">
+          <p>No articles published yet.</p>
+        </div>
+      {% endif %}
+    {% endpaginate %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main Blog",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 18,
+      "step": 3,
+      "default": 9
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show featured image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show publish date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show tag filter links",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog"
+    }
+  ]
+}
+{% endschema %}

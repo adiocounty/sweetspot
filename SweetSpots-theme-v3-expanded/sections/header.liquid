@@ -1,0 +1,76 @@
+<header class="site-header" data-header data-sticky="{{ settings.enable_sticky_header }}">
+  <div class="page-width header-inner">
+    <a class="site-logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
+      {{ shop.name }}
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="SiteNav-{{ section.id }}"
+      data-menu-toggle
+    >
+      {{ section.settings.menu_button_label }}
+    </button>
+
+    <nav id="SiteNav-{{ section.id }}" class="site-nav" aria-label="{{ section.settings.nav_aria_label | escape }}" data-menu-panel>
+      <ul class="site-nav-list" role="list">
+        {% for link in linklists[section.settings.menu].links %}
+          <li class="site-nav-item">
+            <a class="site-nav-link" href="{{ link.url }}" {% if link.current %}aria-current="page"{% endif %}>{{ link.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      {% if section.settings.show_search %}
+        <a class="badge-pill" href="{{ routes.search_url }}" aria-label="Search store">
+          Search
+        </a>
+      {% endif %}
+      <a class="badge-pill" href="{{ routes.cart_url }}" aria-label="Cart{% if section.settings.show_cart_count %}, {{ cart.item_count }} items{% endif %}">
+        Cart{% if section.settings.show_cart_count %} ({{ cart.item_count }}){% endif %}
+      </a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "menu_button_label",
+      "label": "Mobile menu button label",
+      "default": "Menu"
+    },
+    {
+      "type": "text",
+      "id": "nav_aria_label",
+      "label": "Navigation aria label",
+      "default": "Primary"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search link",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_count",
+      "label": "Show cart count",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

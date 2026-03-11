@@ -1,0 +1,14 @@
+{% if product %}
+  <article class="card product-card stack">
+    {% if product.featured_image %}
+      <a href="{{ product.url }}" aria-label="View {{ product.title | escape }}">
+        {{ product.featured_image | image_url: width: 760 | image_tag: loading: 'lazy', alt: product.title }}
+      </a>
+    {% endif %}
+    <h3><a href="{{ product.url }}">{{ product.title }}</a></h3>
+    {% if show_vendor and product.vendor != blank %}
+      <p class="meta">{{ product.vendor }}</p>
+    {% endif %}
+    {% render 'price', product: product %}
+  </article>
+{% endif %}

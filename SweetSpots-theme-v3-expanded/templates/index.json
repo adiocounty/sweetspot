@@ -1,0 +1,170 @@
+{
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "settings": {
+        "text": "Free shipping on orders over $50"
+      }
+    },
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "kicker": "Spring collection",
+        "heading": "Create a storefront that converts",
+        "subheading": "SweetSpots gives you accessible defaults, rich content sections, and conversion-focused layouts.",
+        "button_label": "Shop all",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "slideshow": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "heading": "Best sellers",
+            "text": "Highlight top-performing products and collections.",
+            "link_label": "Browse",
+            "link": "shopify://collections/all"
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "heading": "New arrivals",
+            "text": "Feature the latest products with supporting copy.",
+            "link_label": "View new",
+            "link": "shopify://collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "slide_1",
+        "slide_2"
+      ]
+    },
+    "featured_products": {
+      "type": "featured-products",
+      "settings": {
+        "heading": "Featured products",
+        "products_to_show": 8,
+        "columns": 4
+      }
+    },
+    "collection_list": {
+      "type": "collection-list",
+      "blocks": {
+        "collection_1": {
+          "type": "collection",
+          "settings": {
+            "fallback_title": "Shop all"
+          }
+        },
+        "collection_2": {
+          "type": "collection",
+          "settings": {
+            "fallback_title": "New arrivals"
+          }
+        },
+        "collection_3": {
+          "type": "collection",
+          "settings": {
+            "fallback_title": "Trending"
+          }
+        }
+      },
+      "block_order": [
+        "collection_1",
+        "collection_2",
+        "collection_3"
+      ]
+    },
+    "rich_text": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Built for growth",
+        "text": "<p>Use these sections to launch quickly while still giving merchants deep control over style and layout.</p>"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial_1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Beautiful design and very easy to customize.",
+            "author": "A. Rivera"
+          }
+        },
+        "testimonial_2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Accessibility was already handled, which saved us days.",
+            "author": "M. Chen"
+          }
+        },
+        "testimonial_3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Our product pages look premium and convert better.",
+            "author": "S. Patel"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_1",
+        "testimonial_2",
+        "testimonial_3"
+      ]
+    },
+    "newsletter": {
+      "type": "newsletter"
+    },
+    "featured_blog": {
+      "type": "featured-blog"
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "item",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "Yes, we ship worldwide with real-time rates at checkout."
+          }
+        },
+        "q2": {
+          "type": "item",
+          "settings": {
+            "question": "Can I edit this theme without code?",
+            "answer": "Yes. Most styling and content controls are available directly in the theme editor."
+          }
+        },
+        "q3": {
+          "type": "item",
+          "settings": {
+            "question": "Is this theme accessibility ready?",
+            "answer": "It includes keyboard support, focus states, labels, and high-contrast defaults."
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ]
+    }
+  },
+  "order": [
+    "announcement",
+    "hero",
+    "slideshow",
+    "featured_products",
+    "collection_list",
+    "rich_text",
+    "testimonials",
+    "newsletter",
+    "featured_blog",
+    "faq"
+  ]
+}
