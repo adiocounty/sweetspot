@@ -1,0 +1,265 @@
+{%- assign selected_variant = product.selected_or_first_available_variant -%}
+{%- assign featured_image = selected_variant.featured_image | default: product.featured_image -%}
+
+<section class="section" data-product-root data-currency="{{ cart.currency.iso_code | default: shop.currency }}">
+  <div class="page-width">
+    {% if section.settings.show_breadcrumbs %}
+      {% render 'breadcrumbs' %}
+    {% endif %}
+
+    <div class="product-layout {% if section.settings.media_position == 'right' %}product-layout--right{% endif %}">
+      <div class="product-gallery">
+        <div class="product-gallery__main">
+          {% if featured_image %}
+            <img
+              data-main-product-image
+              src="{{ featured_image | image_url: width: 1200 }}"
+              srcset="{{ featured_image | image_url: width: 600 }} 600w, {{ featured_image | image_url: width: 900 }} 900w, {{ featured_image | image_url: width: 1200 }} 1200w"
+              sizes="(min-width: 990px) 50vw, 100vw"
+              alt="{{ featured_image.alt | default: product.title | escape }}"
+              loading="eager"
+              width="{{ featured_image.width }}"
+              height="{{ featured_image.height }}"
+            >
+          {% elsif product.featured_image %}
+            {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'eager', alt: product.title }}
+          {% endif %}
+        </div>
+
+        {% if product.images.size > 1 and section.settings.show_thumbnails %}
+          <ul class="product-gallery__thumbs" role="list" aria-label="Product media thumbnails">
+            {% for image in product.images limit: 8 %}
+              <li class="product-gallery__thumb">
+                <button
+                  type="button"
+                  data-thumb-image
+                  data-src="{{ image | image_url: width: 1200 }}"
+                  data-srcset="{{ image | image_url: width: 600 }} 600w, {{ image | image_url: width: 900 }} 900w, {{ image | image_url: width: 1200 }} 1200w"
+                  data-alt="{{ image.alt | default: product.title | escape }}"
+                  aria-label="View image {{ forloop.index }} of {{ product.images.size }}"
+                >
+                  {% assign thumbnail_alt = image.alt | default: product.title %}
+                  {{ image | image_url: width: 180 | image_tag: loading: 'lazy', alt: thumbnail_alt }}
+                </button>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <div class="product-details stack">
+        <h1>{{ product.title }}</h1>
+
+        {% if section.settings.show_vendor and product.vendor != blank %}
+          <p class="meta">{{ product.vendor }}</p>
+        {% endif %}
+
+        <p id="ProductPrice-{{ section.id }}" class="product-price" data-product-price>
+          {{ selected_variant.price | money }}
+        </p>
+
+        {% if section.settings.show_inventory %}
+          <p
+            id="ProductAvailability-{{ section.id }}"
+            class="meta"
+            data-availability
+            aria-live="polite"
+            data-in-stock="In stock"
+            data-out-of-stock="Out of stock"
+          >
+            {% if selected_variant.available %}
+              In stock
+            {% else %}
+              Out of stock
+            {% endif %}
+          </p>
+        {% endif %}
+
+        {% if section.settings.show_sku and selected_variant.sku != blank %}
+          <p class="meta">SKU: {{ selected_variant.sku }}</p>
+        {% endif %}
+
+        {% form 'product', product, id: 'ProductForm-' | append: section.id, class: 'stack' %}
+          {% if product.variants.size > 1 %}
+            <div class="form-row">
+              <label for="VariantSelect-{{ section.id }}">{{ section.settings.variant_label }}</label>
+              <select
+                id="VariantSelect-{{ section.id }}"
+                name="id"
+                data-variant-select
+                aria-describedby="ProductPrice-{{ section.id }}"
+              >
+                {% for variant in product.variants %}
+                  <option value="{{ variant.id }}" {% if variant.id == selected_variant.id %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+                    {{ variant.title }} - {{ variant.price | money }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          {% else %}
+            <input type="hidden" name="id" value="{{ selected_variant.id }}" data-variant-id>
+          {% endif %}
+
+          <div class="form-row">
+            <label for="Quantity-{{ section.id }}">{{ section.settings.quantity_label }}</label>
+            <input
+              id="Quantity-{{ section.id }}"
+              type="number"
+              name="quantity"
+              min="1"
+              value="1"
+              inputmode="numeric"
+            >
+            <p class="form-help">Enter the quantity, then add to cart.</p>
+          </div>
+
+          <button
+            type="submit"
+            class="button"
+            data-add-to-cart
+            data-add-text="{{ section.settings.add_to_cart_text | escape }}"
+            data-sold-out-text="{{ section.settings.sold_out_text | escape }}"
+            {% unless selected_variant.available %}disabled{% endunless %}
+            aria-label="{{ section.settings.add_to_cart_text | escape }}: {{ product.title | escape }}"
+          >
+            {% if selected_variant.available %}
+              {{ section.settings.add_to_cart_text }}
+            {% else %}
+              {{ section.settings.sold_out_text }}
+            {% endif %}
+          </button>
+
+          {% if section.settings.show_dynamic_checkout %}
+            {{ form | payment_button }}
+          {% endif %}
+        {% endform %}
+
+        <script type="application/json" data-variants-json>
+          {{ product.variants | json }}
+        </script>
+
+        {% if section.settings.show_share_link %}
+          <p>
+            <a href="{{ canonical_url }}" aria-label="Copy product URL for {{ product.title | escape }}">Copy product link</a>
+          </p>
+        {% endif %}
+
+        {% if section.settings.show_description %}
+          <div class="content-width">
+            {{ product.description }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main Product",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "Media position",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_thumbnails",
+      "label": "Show image thumbnails",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inventory",
+      "label": "Show inventory status",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "label": "Show SKU",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share_link",
+      "label": "Show share link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "variant_label",
+      "label": "Variant label",
+      "default": "Choose an option"
+    },
+    {
+      "type": "text",
+      "id": "quantity_label",
+      "label": "Quantity label",
+      "default": "Quantity"
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_text",
+      "label": "Add to cart text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "label": "Sold out text",
+      "default": "Sold out"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product"
+    }
+  ]
+}
+{% endschema %}
+
+
+
+

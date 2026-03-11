@@ -1,0 +1,19 @@
+{% if item %}
+  <div class="grid" style="grid-template-columns:auto 1fr;gap:0.75rem;align-items:start;">
+    {% if item.image %}
+      <div class="cart-media">
+        <a href="{{ item.url }}">
+          {{ item.image | image_url: width: 140 | image_tag: loading: 'lazy', alt: item.product.title }}
+        </a>
+      </div>
+    {% endif %}
+
+    <div class="stack">
+      <h3><a href="{{ item.url }}">{{ item.product.title }}</a></h3>
+      {% if item.variant.title != 'Default Title' %}
+        <p class="meta">{{ item.variant.title }}</p>
+      {% endif %}
+      <p>{{ item.final_price | money }}</p>
+    </div>
+  </div>
+{% endif %}

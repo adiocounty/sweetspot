@@ -1,0 +1,42 @@
+<section class="section">
+  <div class="page-width stack">
+    {% if cart.item_count > 0 %}
+      {% for item in cart.items %}
+        <article class="card grid" style="grid-template-columns:auto 1fr;gap:1rem;align-items:start;">
+          {% if item.image %}
+            {{ item.image | image_url: width: 160 | image_tag: loading: 'lazy', alt: item.product.title }}
+          {% endif %}
+          <div class="stack">
+            <h3><a href="{{ item.url }}">{{ item.product.title }}</a></h3>
+            {% if item.variant.title != 'Default Title' %}
+              <p class="meta">{{ item.variant.title }}</p>
+            {% endif %}
+            <p>{{ item.final_price | money }}</p>
+            <label class="visually-hidden" for="Updates-{{ item.key }}">Quantity</label>
+            <input id="Updates-{{ item.key }}" type="number" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="0">
+            <a class="button button--secondary" href="{{ item.url_to_remove }}">Remove</a>
+          </div>
+        </article>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">Your cart is empty.</div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart Items",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart Items"
+    }
+  ]
+}
+{% endschema %}

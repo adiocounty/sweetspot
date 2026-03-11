@@ -1,0 +1,11 @@
+{% if article %}
+  <article class="card article-card stack">
+    {% if article.image %}
+      <a href="{{ article.url }}" aria-label="Read {{ article.title | escape }}">
+        {{ article.image | image_url: width: 760 | image_tag: loading: 'lazy', alt: article.title }}
+      </a>
+    {% endif %}
+    <h3><a href="{{ article.url }}">{{ article.title }}</a></h3>
+    <p>{{ article.excerpt_or_content | strip_html | truncate: 120 }}</p>
+  </article>
+{% endif %}

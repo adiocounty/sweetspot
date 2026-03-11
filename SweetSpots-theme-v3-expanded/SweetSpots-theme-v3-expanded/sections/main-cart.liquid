@@ -1,0 +1,154 @@
+<section class="section">
+  <div class="page-width">
+    {% if section.settings.show_breadcrumbs %}
+      {% render 'breadcrumbs' %}
+    {% endif %}
+
+    <h1>{{ section.settings.heading }}</h1>
+
+    {% if cart.item_count > 0 %}
+      <form action="{{ routes.cart_url }}" method="post" novalidate>
+        <div class="cart-layout">
+          <table class="cart-table" role="table">
+            <thead>
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in cart.items %}
+                <tr>
+                  <td>
+                    <div class="grid" style="grid-template-columns:auto 1fr;align-items:start;gap:0.75rem;">
+                      {% if item.image %}
+                        <div class="cart-media">
+                          <a href="{{ item.url }}" aria-label="View {{ item.product.title | escape }}">
+                            {{ item.image | image_url: width: 144 | image_tag: loading: 'lazy', alt: item.product.title }}
+                          </a>
+                        </div>
+                      {% endif %}
+                      <div>
+                        <a href="{{ item.url }}"><strong>{{ item.product.title }}</strong></a>
+                        {% if section.settings.show_vendor and item.product.vendor != blank %}
+                          <p class="meta">{{ item.product.vendor }}</p>
+                        {% endif %}
+                        {% if item.variant.title != 'Default Title' %}
+                          <p class="meta">{{ item.variant.title }}</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ item.final_price | money }}</td>
+                  <td>
+                    <label class="visually-hidden" for="CartUpdates-{{ item.key }}">Quantity for {{ item.product.title }}</label>
+                    <input
+                      id="CartUpdates-{{ item.key }}"
+                      type="number"
+                      name="updates[{{ item.key }}]"
+                      value="{{ item.quantity }}"
+                      min="0"
+                      inputmode="numeric"
+                    >
+                  </td>
+                  <td>
+                    <a class="button button--secondary" href="{{ item.url_to_remove }}" aria-label="Remove {{ item.product.title | escape }} from cart">
+                      Remove
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <div class="cart-summary card stack" aria-live="polite">
+            {% if section.settings.show_notes %}
+              <div>
+                <label for="CartNote">Order note</label>
+                <textarea id="CartNote" name="note" rows="4">{{ cart.note }}</textarea>
+              </div>
+            {% endif %}
+
+            <p><strong>Subtotal:</strong> {{ cart.total_price | money }}</p>
+
+            {% if section.settings.show_taxes_shipping_note %}
+              <p class="muted">Taxes and shipping are calculated at checkout.</p>
+            {% endif %}
+
+            <div class="stack">
+              <button class="button button--secondary" type="submit" name="update">{{ section.settings.update_label }}</button>
+              <button class="button" type="submit" name="checkout">{{ section.settings.checkout_label }}</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    {% else %}
+      <div class="empty-state stack">
+        <p>Your cart is currently empty.</p>
+        <a class="button" href="{{ routes.all_products_collection_url }}">Continue shopping</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main Cart",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_notes",
+      "label": "Enable order notes",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_taxes_shipping_note",
+      "label": "Show taxes and shipping note",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "update_label",
+      "label": "Update button text",
+      "default": "Update cart"
+    },
+    {
+      "type": "text",
+      "id": "checkout_label",
+      "label": "Checkout button text",
+      "default": "Checkout"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart"
+    }
+  ]
+}
+{% endschema %}
